@@ -4,16 +4,17 @@
 import * as EmojiActions from 'mattermost-redux/actions/emojis';
 import {getProfilesByIds} from 'mattermost-redux/actions/users';
 
+import {getEmojiMap} from 'selectors/emojis';
+
 import AppDispatcher from 'dispatcher/app_dispatcher.jsx';
 import store from 'stores/redux_store.jsx';
 import UserStore from 'stores/user_store.jsx';
+import EmojiStore from 'stores/emoji_store.jsx';
+
 import {ActionTypes} from 'utils/constants.jsx';
 
-const dispatch = store.dispatch;
-const getState = store.getState;
-
 export async function loadEmoji(getProfiles = true) {
-    const {data} = await EmojiActions.getAllCustomEmojis()(dispatch, getState);
+    const {data} = await EmojiActions.getAllCustomEmojis()(store.dispatch, store.getState);
 
     if (data && getProfiles) {
         loadProfilesForEmoji(data);
@@ -34,11 +35,11 @@ function loadProfilesForEmoji(emojiList) {
         return;
     }
 
-    getProfilesByIds(list)(dispatch, getState);
+    getProfilesByIds(list)(store.dispatch, store.getState);
 }
 
 export async function addEmoji(emoji, image, success, error) {
-    const {data, error: err} = await EmojiActions.createCustomEmoji(emoji, image)(dispatch, getState);
+    const {data, error: err} = await EmojiActions.createCustomEmoji(emoji, image)(store.dispatch, store.getState);
     if (data && success) {
         success(data);
     } else if (err && error) {
@@ -47,7 +48,7 @@ export async function addEmoji(emoji, image, success, error) {
 }
 
 export async function deleteEmoji(emojiId, success, error) {
-    const {data, error: err} = await EmojiActions.deleteCustomEmoji(emojiId)(dispatch, getState);
+    const {data, error: err} = await EmojiActions.deleteCustomEmoji(emojiId)(store.dispatch, store.getState);
     if (data) {
         // Needed to remove recently used emoji
         AppDispatcher.handleServerAction({
@@ -61,4 +62,28 @@ export async function deleteEmoji(emojiId, success, error) {
     } else if (err && error) {
         error({id: err.server_error_id, ...err});
     }
+}
+
+export function loadRecentlyUsedCustomEmojis() {
+    return async (dispatch, getState) => {
+        const recentEmojis = EmojiStore.getRecentEmojis();
+        const emojiMap = getEmojiMap(getState());
+        const missingEmojis = recentEmojis.filter((name) => !emojiMap.has(name));
+
+        missingEmojis.forEach((name) => {
+            EmojiActions.getCustomEmojiByName(name)(dispatch, getState);
+        });
+
+        return {data: true};
+    };
+}
+
+export function incrementEmojiPickerPage() {
+    return async (dispatch) => {
+        dispatch({
+            type: ActionTypes.INCREMENT_EMOJI_PICKER_PAGE
+        });
+
+        return {data: true};
+    };
 }

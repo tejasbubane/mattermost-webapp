@@ -5232,6 +5232,25 @@ mattermost-redux@mattermost/mattermost-redux#917fbf0969ff6a042d536cb711063396dec
     serialize-error "2.1.0"
     shallow-equals "1.0.0"
 
+mattermost-redux@mattermost/mattermost-redux#abc-92-no-emoji:
+  version "1.1.0"
+  resolved "https://codeload.github.com/mattermost/mattermost-redux/tar.gz/233dfd0681692b611552db87d12775ffa77b2b64"
+  dependencies:
+    deep-equal "1.0.1"
+    form-data "2.3.1"
+    harmony-reflect "1.5.1"
+    isomorphic-fetch "2.2.1"
+    mime-db "1.30.0"
+    redux "3.7.2"
+    redux-action-buffer "1.1.0"
+    redux-batched-actions "0.2.0"
+    redux-offline "git+https://github.com/enahum/redux-offline.git"
+    redux-persist "4.9.1"
+    redux-thunk "2.2.0"
+    reselect "3.0.1"
+    serialize-error "2.1.0"
+    shallow-equals "1.0.0"
+
 mem@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mem/-/mem-1.1.0.tgz#5edd52b485ca1d900fe64895505399a0dfa45f76"
