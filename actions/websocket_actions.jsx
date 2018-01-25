@@ -72,6 +72,7 @@ export function initialize() {
     WebSocketClient.initialize(connUrl);
 }
 
+window.close = close;
 export function close() {
     WebSocketClient.close();
 }
